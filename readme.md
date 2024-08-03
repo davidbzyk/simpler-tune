@@ -96,4 +96,8 @@ def process_csv_to_jsonl(input_csv, output_jsonl):
 ```
 There is a handful of steps in fine-tuning-data.ipynb, I left one out as for some reason I moved directories around and did not save.  feel free to adjust or enhance, just remember Python index starts at 0.  
 
-- fine tuning data is first processed to the processed folder, then I manually look at it to determine what needs to be cleaned then run a cleaning function to the cleaned folder.
+- fine tuning data is first processed to the processed folder, then I manually look at it to determine what needs to be cleaned then run a cleaning function to the cleaned folder.  Then delete jsonl file in the processed folder after manually confirming nothing else is going on.
+
+### Continued Pre training Data
+Basically all I did here was concatenate all rows for each product that made sense.  Then did some cleaning for nans, etc.
+
