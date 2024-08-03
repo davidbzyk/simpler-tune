@@ -44,7 +44,7 @@ conda install -c anaconda ipykernel -y
 pip install wandb
 ```
 
-### First step is to acquire and clean data (can skip ahead as finished results are in folder)
+### Step 1, first step is to acquire and clean data (can skip ahead as finished results are in folder)
 I find pretraining and finetuning are great combination when trying to train a model for a specific task.
 For our example we used the Product Question and Answers in the Step-1-Data-Preproccessing --> raw-data folder.
 
@@ -99,5 +99,37 @@ There is a handful of steps in fine-tuning-data.ipynb, I left one out as for som
 - fine tuning data is first processed to the processed folder, then I manually look at it to determine what needs to be cleaned then run a cleaning function to the cleaned folder.  Then delete jsonl file in the processed folder after manually confirming nothing else is going on.
 
 ### Continued Pre training Data
-Basically all I did here was concatenate all rows for each product that made sense.  Then did some cleaning for nans, etc.
+- Basically all I did here was concatenate all rows for each product that made sense.  Then did some cleaning for nans, etc.
 
+- Then we determine `max_seq_length` based upon the model we want to trains tokenizer.  Steps are outlined in the notebook.  
+
+- Split and label jsonl lines so the model easily understands.
+
+
+We now have 2 files we are ready to train with:
+- `all-qa-final.jsonl`
+- `split-pretrain.jsonl`
+
+## Training the model
+It typically makes sense to pretrain first to fill it with knowledge.
+some things you might want to consider:
+- **Huggingface api key** - this will allow you to deploy and pull (must install git lfs).
+- **wanb api key (weights and biases)** - this will help you monitor analytics and show you where to improve in the training process.
+- Start out with a foundational model, we use `MODEL_NAME="unsloth/gemma-2-2b-it-bnb-4bit"` for this exercise, then when moving onto pretraining, use your saved model from huggingface or local to load up:
+
+```python
+model, tokenizer = FastLanguageModel.from_pretrained(
+    model_name = MODEL_NAME, # Choose ANY! eg teknium/OpenHermes-2.5-Mistral-7B
+    max_seq_length = max_seq_length,
+    dtype = dtype,
+    load_in_4bit = load_in_4bit,
+    # token = "hf_...", # use one if using gated models like meta-llama/Llama-2-7b-hf
+)
+```
+- The conversion process in regards to quantizing the model has an issue currenlty as there seems to be an issue with llama.cpp which is used to quantize, there is a workaround on huggingface, just follow this link and use your main model or 16bit conversion here:
+
+`https://huggingface.co/spaces/ggml-org/gguf-my-repo`
+
+After setting up API Keys, where you want to save, etc.. **Press Play** and sit back and watch.
+
+Pretrain.ipynb has play by play instructions 
