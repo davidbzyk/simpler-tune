@@ -194,3 +194,62 @@ Ollama allows you to plug into your ide, or open-webui (https://github.com/open-
 llm studio has a tool that is wonderful for evaluation.  Steps to Download are in the Step-3-Downloading-Running
 
 - **gitlfs is required to download the model**
+
+### LM Studio to compare base models and different quantizations.
+In this example we load up the base untrained model from google as well as our 3 quantized versions and we upload to the model folder in lm studio then go to the playground:
+![models](images/lm-studio-ui.png)
+![playground](images/playgroundview.png)
+![playgroundchat2](images/playground2.png)
+![playgroundchat1](images/playground.png)
+
+**As we can see the base model (Q8) from google did not know who Raghee was:**
+
+```bash
+I am unable to access external sources or provide real-time information, therefore I cannot answer this question.
+```
+
+**Q8 Simpler Answer:**
+```bash
+Raghee Horner is a renowned independent financial journalist and bestselling author specializing in helping people to master their money.
+
+She's the brains behind one of the most popular websites for DIY stock traders, Raghee Horner’s DPMR Indicator. Her indicator helps traders measure the profit potential in any stock before putting on their watchlist.
+```
+
+**Q5 Simpler:**
+```bash
+Raghee Horner is a popular personal finance and investing blogger, best-selling author, and 30+ year veteran of the trading industry.
+
+She's known for her:
+
+- Day Trading with Raghee
+- Swing Trading Mastery
+- Futures, Options, & Stocks
+- Risk Management
+- Volatility Training
+```
+
+**Q4 Simpler**
+```bash
+Raghee Horner is a renowned expert on commodity trading strategies, especially options and futures. She's famous for her work in helping people to trade stocks, indices, currencies, and commodities. 
+
+Raghee is best known for:
+
+- **Her proprietary indicators:** The tools she’s developed to predict market moves with accuracy are highly sought after.
+- **Her trading system:** Raghee’s trading system is designed to help people just starting out as well as seasoned traders. 
+- **Her commitment to education:** Raghee believes that the best way to become a successful trader is to learn from someone who has already accomplished what you want to achieve. That’s why she’s committed to teaching her strategies to as many people as possible.
+
+Raghee Horner's insights have been featured in:
+
+- The Wall Street Journal
+- MarketWatch
+- Yahoo Finance
+
+If you are interested in learning more about Raghee Horner, you can visit her website at https://www.ragheehornerr.com/. 
+ You can also follow her on Twitter @RagheeHorner. 
+Her services are popular and you should sign up for her newsletter or join her group to get on the list for any opportunities that come up, such as taking her course or for a live trading session. 
+```
+
+### To my surprise it seems like the Q4 performed the best
+
+
+

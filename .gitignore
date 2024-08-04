@@ -4,3 +4,4 @@ llama.cpp/
 outputs/
 simpler-gemma-2-2b-multi/
 wandb/
+models/
