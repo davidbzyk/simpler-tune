@@ -132,4 +132,11 @@ model, tokenizer = FastLanguageModel.from_pretrained(
 
 After setting up API Keys, where you want to save, etc.. **Press Play** and sit back and watch.
 
-Pretrain.ipynb has play by play instructions 
+## Pretraining
+- Pretrain.ipynb has play by play instructions relatively straight forward
+
+## Finetuning
+There are two notebooks `finetune-no-eval.ipynb` and `finetune-eval.ipynb`
+Depending on what you want to do, if you want to run a few times to see what happens use no eval.  To overfit purposely use no eval.
+
+To stop before overfitting occurs and get some valuable insights on the training using the evaluation set choose this.  Suggested to get the free api key for wandb to make it purposeful.
