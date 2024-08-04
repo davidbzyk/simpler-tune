@@ -1,0 +1,6 @@
+.env
+_unsloth_sentencepiece_temp/
+llama.cpp/
+outputs/
+simpler-gemma-2-2b-multi/
+wandb/

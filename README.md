@@ -1,9 +1,9 @@
 ## Training a large language model for a specific use case: Simpler Trading Product Question and Answers
-- note: I used a bleeding edge efficient in terms of speed and vram, process which uses custom Nvidia and Triton kernals so (Unsloth) so will not work with metal (Mac) at the moment.
+- note: I used a new framework for increased speed and less vram use. The process uses custom Nvidia and Triton kernals so (Unsloth) so will not work with metal (Mac) at the moment.  If using windows pc it is suggested to use WSL to avoid complications, I don't use windows so I can't confirm.
 
 ## Notes / lessons learned / best practices before you start training
 ### `max_sequence_length` 
-I trained locally using a 3090 and i9 14.9kf.  24gb reall isn't a lot so had to keep the `max_sequence_length` lower.  I initially did 512 on pretrain but ended up 800 on finetune.  They both worked fine.
+I trained locally using a 3090 and i9 14.9kf.  24gb really isn't a lot so had to keep the `max_sequence_length` lower.  I initially did 512 on pretrain but ended up 800 on finetune.  They both worked fine.
 - The longer the sequence, the more memory is required to store and process it. Memory consumption grows approximately linearly with sequence length.
 - Transformers, in particular, have memory requirements that scale quadratically with the sequence length due to the self-attention mechanism. This means that doubling the sequence length can quadruple the memory usage.
 
@@ -42,6 +42,7 @@ pip install --no-deps "xformers<0.0.27" "trl<0.9.0" peft accelerate bitsandbytes
 conda install -c conda-forge jupyter -y
 conda install -c anaconda ipykernel -y
 pip install wandb
+pip install python-dotenv
 ```
 
 ### Step 1, first step is to acquire and clean data (can skip ahead as finished results are in folder)
@@ -140,3 +141,56 @@ There are two notebooks `finetune-no-eval.ipynb` and `finetune-eval.ipynb`
 Depending on what you want to do, if you want to run a few times to see what happens use no eval.  To overfit purposely use no eval.
 
 To stop before overfitting occurs and get some valuable insights on the training using the evaluation set choose this.  Suggested to get the free api key for wandb to make it purposeful.
+
+When training you are looking for the training loss to consecutively decrease.
+
+**Weight and Biases Pretraining Analytics:**
+![Weights and Biases Pretrain Analytics](images/wandb-pretrain.png)
+
+
+
+
+
+### Downloading and Running
+There are several options to download and evaluate, but first a brief note on quantization:
+```python
+# https://github.com/ggerganov/llama.cpp/blob/master/examples/quantize/quantize.cpp#L19
+# From https://mlabonne.github.io/blog/posts/Quantize_Llama_2_models_using_ggml.html
+ALLOWED_QUANTS = \
+{
+    "not_quantized"  : "Recommended. Fast conversion. Slow inference, big files.",
+    "fast_quantized" : "Recommended. Fast conversion. OK inference, OK file size.",
+    "quantized"      : "Recommended. Slow conversion. Fast inference, small files.",
+    "f32"     : "Not recommended. Retains 100% accuracy, but super slow and memory hungry.",
+    "f16"     : "Fastest conversion + retains 100% accuracy. Slow and memory hungry.",
+    "q8_0"    : "Fast conversion. High resource use, but generally acceptable.",
+    "q4_k_m"  : "Recommended. Uses Q6_K for half of the attention.wv and feed_forward.w2 tensors, else Q4_K",
+    "q5_k_m"  : "Recommended. Uses Q6_K for half of the attention.wv and feed_forward.w2 tensors, else Q5_K",
+    "q2_k"    : "Uses Q4_K for the attention.vw and feed_forward.w2 tensors, Q2_K for the other tensors.",
+    "q3_k_l"  : "Uses Q5_K for the attention.wv, attention.wo, and feed_forward.w2 tensors, else Q3_K",
+    "q3_k_m"  : "Uses Q4_K for the attention.wv, attention.wo, and feed_forward.w2 tensors, else Q3_K",
+    "q3_k_s"  : "Uses Q3_K for all tensors",
+    "q4_0"    : "Original quant method, 4-bit.",
+    "q4_1"    : "Higher accuracy than q4_0 but not as high as q5_0. However has quicker inference than q5 models.",
+    "q4_k_s"  : "Uses Q4_K for all tensors",
+    "q4_k"    : "alias for q4_k_m",
+    "q5_k"    : "alias for q5_k_m",
+    "q5_0"    : "Higher accuracy, higher resource usage and slower inference.",
+    "q5_1"    : "Even higher accuracy, resource usage and slower inference.",
+    "q5_k_s"  : "Uses Q5_K for all tensors",
+    "q6_k"    : "Uses Q8_K for all tensors",
+    "iq2_xxs" : "2.06 bpw quantization",
+    "iq2_xs"  : "2.31 bpw quantization",
+    "iq3_xxs" : "3.06 bpw quantization",
+    "q3_k_xs" : "3-bit extra small quantization",
+}
+```
+**The easiest way to run models locally is with:**
+- ollama: https://ollama.com/download
+- lm studio: https://lmstudio.ai/
+
+Ollama allows you to plug into your ide, or open-webui (https://github.com/open-webui/open-webui)
+
+llm studio has a tool that is wonderful for evaluation.  Steps to Download are in the Step-3-Downloading-Running
+
+- **gitlfs is required to download the model**
